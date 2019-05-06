@@ -36,9 +36,9 @@ function pageLoadHandler(){
 
 function areNeigbours(coord1, coord2){
     if(coord1.x == coord2.x){
-	return Math.abs(coord1.y-coord2.y) == 1;
+        return Math.abs(coord1.y-coord2.y) == 1;
     }else if(coord1.y == coord2.y){
-	return Math.abs(coord1.x-coord2.x) == 1;
+        return Math.abs(coord1.x-coord2.x) == 1;
     }
     return false;
 }
@@ -78,11 +78,11 @@ function createPuzzle(width, height){
     let board = new Array(height);
     let i = 0;
     for(let row = 0;row < height;row++){
-	board[row] = new Array(width);
-	for(let col = 0;col<width;col++){
-	    i++;
-	    board[row][col] = i;
-	}
+        board[row] = new Array(width);
+        for(let col = 0;col<width;col++){
+            i++;
+            board[row][col] = i;
+        }
     }
     
     //Put the empty square in bottom right
@@ -90,8 +90,8 @@ function createPuzzle(width, height){
 
     
     puzzle = { board: board,
-		   emptyTile:  emptyTile
-		 }
+               emptyTile:  emptyTile
+             }
     scramblePuzzle();
 }
 
@@ -123,7 +123,7 @@ function isSwappable(clickedCoord){
 
 function isWithinBounds(coord){
     return coord.x >= 0 && coord.x < getPuzzleWidth() &&
-	coord.y >= 0 && coord.y < getPuzzleHeight();
+        coord.y >= 0 && coord.y < getPuzzleHeight();
 }
 
 function findSwapCandidates(){
@@ -132,12 +132,11 @@ function findSwapCandidates(){
     let top = getTopCoordinate(puzzle.emptyTile);
     let bottom = getBottomCoordinate(puzzle.emptyTile);
     let candidates = [left, right, top, bottom];
-    let i;
     let result = [];
-    for(i = 0;i< candidates.length; i++){
-    	if(isWithinBounds(candidates[i])){
-    	    result.push(candidates[i]);
-    	}
+    for(let i = 0;i< candidates.length; i++){
+        if(isWithinBounds(candidates[i])){
+            result.push(candidates[i]);
+        }
     }
     return result;
 } 
@@ -150,7 +149,7 @@ function scramblePuzzle(){
     if(amountOfSwaps % 2 == 0) amountOfSwaps++;
 
     while(amountOfSwaps-- > 0){
-	performRandomSwap();
+        performRandomSwap();
     }
 
 }
@@ -171,31 +170,30 @@ function swapWithEmpty(toSwap){
 //This handler function is called whenever a tile on the board is clicked
 function tileClickedHandler(container, clickedPoint){
     if(isSwappable(clickedPoint)){
-	swapWithEmpty(clickedPoint);
-	drawPuzzle(container);
-	checkGameWon();
+        swapWithEmpty(clickedPoint);
+        drawPuzzle(container);
+        checkGameWon();
     }
 }
 
 function checkGameWon(){
-    let row, col;
-    for(row = 0;row<getPuzzleHeight();row++){
-	for(col = 0;col<getPuzzleWidth();col++){
-	    //Instead of the calculation below, we could also simply increment
-	    //a counter like we did during board creation
-	    let expectedValue = row*getPuzzleWidth()+col+1;
-	    
-	    //The very last tile is zero (since it is the empty tile)
-	    if(expectedValue == getPuzzleHeight() * getPuzzleWidth()){
-		expectedValue = 0;
-	    }
+    for(let row = 0;row<getPuzzleHeight();row++){
+        for(let col = 0;col<getPuzzleWidth();col++){
+            //Instead of the calculation below, we could also simply increment
+            //a counter like we did during board creation
+            let expectedValue = row*getPuzzleWidth()+col+1;
+            
+            //The very last tile is zero (since it is the empty tile)
+            if(expectedValue == getPuzzleHeight() * getPuzzleWidth()){
+                expectedValue = 0;
+            }
 
-	    //If a single tile does not have the correct value, the game is not
-	    //yet won
-	    if(getValueAtCoord({x : col, y: row}) != expectedValue){
-		return false;
-	    }
-	}
+            //If a single tile does not have the correct value, the game is not
+            //yet won
+            if(getValueAtCoord({x : col, y: row}) != expectedValue){
+                return false;
+            }
+        }
     }
     //All tiles must have the correct value, otherwise we would have exited
     //this function in the loop above
@@ -210,15 +208,13 @@ function gameWon(){
 // HTML DRAWING FUNCTIONS //
 ////////////////////////////
 
-function drawPuzzle(container){
-    let row;
-    
+function drawPuzzle(container){ 
     //Open a new table
     let tableHtml = "<table>";
 
     //Now, we can add the html of all our tiles in a loop
-    for(row=0;row<getPuzzleHeight();row++){
-	tableHtml += generateRowHtml(row);
+    for(let row=0;row<getPuzzleHeight();row++){
+        tableHtml += generateRowHtml(row);
     }
 
     //Close the table
@@ -231,15 +227,13 @@ function drawPuzzle(container){
     addCellListeners(container);
 }
 
-function generateRowHtml(row){
-    let col;
-    
+function generateRowHtml(row){ 
     //Start a new row in the table
     let gameRowHtml = "<tr>";
 
     //Add all columns in the row
-    for(col=0;col<getPuzzleWidth();col++){
-	gameRowHtml += generateTileHtml(row, col);
+    for(let col=0;col<getPuzzleWidth();col++){
+        gameRowHtml += generateTileHtml(row, col);
     }
 
     //Close the row
@@ -250,31 +244,26 @@ function generateRowHtml(row){
 function generateTileHtml(row, col){
     let gameTileHtml;
     if(areEqual(puzzle.emptyTile, {x: col, y: row})){
-	//We give the empty tile a special class so that
-	//we can give it a different style in css
-	gameTileHtml="<td class='emptyTile'></td>";
+        //We give the empty tile a special class so that
+        //we can give it a different style in css
+        gameTileHtml="<td class='emptyTile'></td>";
     }else{
-	gameTileHtml = "<td>"+getValueAtCoord({x: col, y:row})+"</td>";
+        gameTileHtml = "<td>"+getValueAtCoord({x: col, y:row})+"</td>";
     }
     return gameTileHtml;
 }
 
 function addCellListeners(container){
-    //let row, col;
     let tableElement = container.firstChild;
-    //let game = this;
     for(let row = 0; row < getPuzzleHeight();row++){
-	for(let col = 0; col < getPuzzleWidth();col++){
-	    //currying is needed to make sure we get the correct row/col values
-	    tableElement.rows[row].cells[col]
-	    	.addEventListener('click',
-	    			  function(row, col){
-	    			      return function(){
-	    				  tileClickedHandler(container,
-	    						     {x: col, y: row}
-	    						    );
-	    			      };
-	    			  }(row, col));
-	}
+        for(let col = 0; col < getPuzzleWidth();col++){
+            tableElement.rows[row].cells[col]
+                .addEventListener('click',
+                                  function(){
+                                      tileClickedHandler(container,
+                                                         {x: col, y: row}
+                                                        )
+                                  });
+        }
     }
 }
